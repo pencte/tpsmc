@@ -49,9 +49,9 @@ export async function GET(request: NextRequest) {
 
   const stream = new ReadableStream({
     start(controller) {
-      function send() {
+      async function send() {
         try {
-          const status = getServerStatus();
+          const status = await getServerStatus();
           const players = getPlayers();
 
           const tpsNoise = Math.sin(Date.now() / 8000) * 0.6;
@@ -125,13 +125,15 @@ export async function GET(request: NextRequest) {
             encoder.encode(`data: ${JSON.stringify(data)}\n\n`)
           );
         } catch (err) {
-          controller.error(err);
+          console.error(err);
         }
       }
 
       send();
 
-      const interval = setInterval(send, 2000);
+      const interval = setInterval(() => {
+        send();
+      }, 2000);
 
       request.signal.addEventListener("abort", () => {
         clearInterval(interval);
