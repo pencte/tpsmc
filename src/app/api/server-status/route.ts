@@ -9,9 +9,10 @@ export async function GET(request: NextRequest) {
 
   const stream = new ReadableStream({
     start(controller) {
-      function send() {
-        const status = getServerStatus();
+      async function send() {
+        const status = await getServerStatus();
         const players = getPlayers();
+
         const tpsNoise = Math.sin(Date.now() / 8000) * 0.6;
         const cpuNoise = Math.sin(Date.now() / 12000) * 15;
         const ramNoise = Math.sin(Date.now() / 15000) * 150;
@@ -20,11 +21,22 @@ export async function GET(request: NextRequest) {
           timestamp: Date.now(),
           server: {
             ...status,
-            tps: parseFloat(Math.max(15, Math.min(20, status.tps + tpsNoise)).toFixed(1)),
-            cpu: Math.max(5, Math.min(90, Math.floor(status.cpu + cpuNoise))),
-            ram: Math.max(1024, Math.min(3800, Math.floor(status.ram + ramNoise))),
+            tps: parseFloat(
+              Math.max(
+                15,
+                Math.min(20, status.tps + tpsNoise)
+              ).toFixed(1)
+            ),
+            cpu: Math.max(
+              5,
+              Math.min(90, Math.floor(status.cpu + cpuNoise))
+            ),
+            ram: Math.max(
+              1024,
+              Math.min(3800, Math.floor(status.ram + ramNoise))
+            ),
           },
-          players: players.map(p => ({
+          players: players.map((p) => ({
             name: p.name,
             online: p.online,
             playtime: p.playtime,
@@ -39,9 +51,11 @@ export async function GET(request: NextRequest) {
       }
 
       send();
-      const interval = setInterval(send, 3000);
 
-      // Cleanup
+      const interval = setInterval(() => {
+        send();
+      }, 3000);
+
       request.signal.addEventListener("abort", () => {
         clearInterval(interval);
         controller.close();
@@ -53,7 +67,7 @@ export async function GET(request: NextRequest) {
     headers: {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",
-      "Connection": "keep-alive",
+      Connection: "keep-alive",
       "Access-Control-Allow-Origin": "*",
     },
   });
