@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     start(controller) {
       async function send() {
         const status = await getServerStatus();
-        const players = getPlayers();
+        const players = await getPlayers();
 
         const tpsNoise = Math.sin(Date.now() / 8000) * 0.6;
         const cpuNoise = Math.sin(Date.now() / 12000) * 15;
