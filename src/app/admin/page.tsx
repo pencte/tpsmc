@@ -5,22 +5,25 @@ import Link from "next/link";
 
 interface AdminData {
   timestamp: number;
-  server: {
-    online: boolean;
-    version: string;
-    playerCount: number;
-    maxPlayers: number;
-    tps: number;
-    uptime: number;
-    ram: number;
-    maxRam: number;
-    cpu: number;
-    difficulty: string;
-    pvp: boolean;
-    whitelist: boolean;
-  };
+server: {
+  online: boolean;
+  version: string;
+  playerCount: number;
+  maxPlayers: number;
+  tps: number;
+  uptime: number;
+  ram: number;
+  maxRam: number;
+  cpu: number;
+  difficulty: string;
+  gamemode: string;
+  pvp: boolean;
+  whitelist: boolean;
+};
+
   players: {
     id: string;
+    uuid: string;
     name: string;
     online: boolean;
     playtime: number;
