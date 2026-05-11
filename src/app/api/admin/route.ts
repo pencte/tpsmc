@@ -2,7 +2,6 @@ export const runtime = "nodejs";
 import { NextRequest } from "next/server";
 import { getServerStatus, getPlayers, getChatLogs } from "@/lib/serverData";
 
-export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
 // Simulated growing chat log
